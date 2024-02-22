@@ -100,6 +100,7 @@ jobs:
         run: |
           if [ "${{ inputs.suite-name == 'ragstack' }}" == "true" ]; then
             cd ragstack-ai-js-e2e-tests
+            yarn install --immutable
             yarn run test
           else
             echo "Unknown suite name: ${{ inputs.suite-name }}"
