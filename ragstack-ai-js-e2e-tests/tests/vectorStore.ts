@@ -1,11 +1,13 @@
 import {AstraLibArgs} from "@langchain/community/dist/vectorstores/astradb";
 import {getRequiredEnv} from "./config";
+import {AstraDB} from "@datastax/astra-db-ts";
+import {HTTPClient} from "@datastax/astra-db-ts/dist/client";
 
 
 export interface VectorStoreHandler {
 
-    beforeTest: () => void;
-    afterTest: () => void;
+    beforeTest: () => Promise<any>;
+    afterTest: () => Promise<any>;
     getBaseAstraLibArgs: () => AstraLibArgs;
 
 }
@@ -21,13 +23,26 @@ export class AstraDBVectorStoreHandler implements VectorStoreHandler {
         this.endpoint = getRequiredEnv("ASTRA_DB_ENDPOINT")
     }
 
-    afterTest(): void {
+    async afterTest(): Promise<any> {
+        await this.deleteAllCollections();
     }
 
-    beforeTest(): void {
+    async beforeTest(): Promise<any> {
+        await this.deleteAllCollections();
         this.collectionName = "documents_" + Math.random().toString(36).substring(7)
     }
 
+
+    private async deleteAllCollections() {
+        const astraDbClient = new AstraDB(this.token, this.endpoint)
+        const httpClient: HTTPClient = (Reflect.get(astraDbClient, "httpClient") as HTTPClient)
+        let apiResponse = await httpClient.executeCommand({"findCollections": {}}, null);
+        const collections = apiResponse.status.collections
+        console.log("Found collections: ", collections)
+        for (let collection of collections) {
+            await astraDbClient.dropCollection(collection)
+        }
+    }
 
     getBaseAstraLibArgs() {
         const astraConfig: AstraLibArgs = {

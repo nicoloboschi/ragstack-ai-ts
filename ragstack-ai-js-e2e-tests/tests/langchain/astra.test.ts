@@ -2,15 +2,16 @@ import {expect, test} from '@jest/globals';
 import {getVectorStoreHandler} from '../config';
 import {AstraDBVectorStore, AstraLibArgs} from "@langchain/community/vectorstores/astradb";
 import {FakeEmbeddings} from "@langchain/core/utils/testing";
+import {Document} from "@langchain/core/documents";
 
 
 
 describe("Astra tests", () => {
-    beforeEach(() => {
-        getVectorStoreHandler().beforeTest()
+    beforeEach(async  () => {
+        await getVectorStoreHandler().beforeTest()
     })
-    afterEach(() => {
-        getVectorStoreHandler().afterTest()
+    afterEach(async () => {
+        await getVectorStoreHandler().afterTest()
     })
 
     test('basic vector search', async () => {
@@ -40,5 +41,28 @@ describe("Astra tests", () => {
         console.log(results)
         expect(results[0].pageContent).toBe("AstraDB is built on Apache Cassandra");
 
+    });
+
+    test('ingest errors', async () => {
+        let config = getVectorStoreHandler().getBaseAstraLibArgs()
+        let fakeEmbeddings = new FakeEmbeddings();
+        config = {
+            ...config,
+            collectionOptions: {
+                vector: {
+                    dimension: 4,
+                    metric: "cosine",
+                },
+            },
+        }
+
+
+
+        const vectorStore = new AstraDBVectorStore(fakeEmbeddings , config)
+        await vectorStore.initialize()
+        await vectorStore.addDocuments([{
+            pageContent: "",
+            metadata: {}}
+        ])
     });
 });
