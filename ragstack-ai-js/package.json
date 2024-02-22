@@ -18,8 +18,8 @@
   },
   "type": "module",
   "scripts": {
-    "lint": "",
-    "lint:fix": "turbo run lint:fix",
+    "lint": "eslint",
+    "lint:fix": "eslint --fix",
     "test": "jest"
   },
   "devDependencies": {
