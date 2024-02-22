@@ -16,10 +16,9 @@
     "@langchain/openai": "0.0.14",
     "langchain": "0.1.21"
   },
+  "type": "module",
   "scripts": {
-    "format": "turbo run format",
-    "format:check": "turbo run format:check",
-    "lint": "turbo run lint --concurrency 1",
+    "lint": "",
     "lint:fix": "turbo run lint:fix",
     "test": "jest"
   },
