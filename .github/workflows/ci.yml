@@ -1,4 +1,4 @@
-name: CI - E2E tests
+name: CI
 on:
   workflow_dispatch: {}
   # schedule:
@@ -35,7 +35,7 @@ jobs:
           yarn run lint
       - name: Unit tests
         run: |
-          cd ragstack-ai-js-e2e-tests
+          cd ragstack-ai-js
           yarn run test
       - uses: dorny/paths-filter@v2
         id: filter
