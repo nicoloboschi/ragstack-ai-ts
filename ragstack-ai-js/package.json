@@ -16,7 +16,6 @@
     "@langchain/openai": "0.0.14",
     "langchain": "0.1.21"
   },
-  "type": "module",
   "scripts": {
     "lint": "eslint",
     "lint:fix": "eslint --fix",
@@ -29,6 +28,8 @@
     "@jest/globals": "^29.7.0",
     "@types/jest": "^29.5.12",
     "@types/node": "^20.11.19",
+    "@typescript-eslint/eslint-plugin": "^7.0.2",
+    "@typescript-eslint/parser": "^7.0.2",
     "babel-jest": "^29.7.0",
     "dotenv": "^16.0.3",
     "eslint": "^8.56.0",
