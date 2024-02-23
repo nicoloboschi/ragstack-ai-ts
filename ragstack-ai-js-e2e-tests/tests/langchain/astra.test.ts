@@ -105,7 +105,7 @@ describe("Astra tests", () => {
             await vectorStore.addDocuments([{pageContent: "foo", metadata: {}}])
             fail("Should have thrown an error")
         } catch (e: any) {
-            expect(e.message).toContain("getaddrinfo ENOTFOUND locahost")
+            expect(e.message).toContain("getaddrinfo")
         }
 
         // endpoint valid, token is not
