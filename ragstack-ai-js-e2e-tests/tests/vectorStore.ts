@@ -40,6 +40,7 @@ export class AstraDBVectorStoreHandler implements VectorStoreHandler {
         const collections = apiResponse.status.collections
         console.log("Found collections: ", collections)
         for (let collection of collections) {
+            console.log("Deleting collection: ", collection)
             await astraDbClient.dropCollection(collection)
         }
     }
@@ -48,7 +49,8 @@ export class AstraDBVectorStoreHandler implements VectorStoreHandler {
         const astraConfig: AstraLibArgs = {
             token: this.token,
             endpoint: this.endpoint,
-            collection: this.collectionName as string
+            collection: this.collectionName as string,
+            maxRetries: 0
         };
         return astraConfig
     }
