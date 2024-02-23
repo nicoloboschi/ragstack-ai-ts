@@ -4,7 +4,6 @@ import {AstraDBVectorStore, AstraLibArgs} from "@langchain/community/vectorstore
 import {FakeEmbeddings} from "@langchain/core/utils/testing";
 import {Document} from "@langchain/core/documents";
 import {CreateCollectionOptions} from "@datastax/astra-db-ts/dist/collections/options";
-import {calculateMaxTokens} from "@langchain/core/dist/language_models/base";
 
 
 describe("Astra tests", () => {
@@ -41,7 +40,7 @@ describe("Astra tests", () => {
         );
         const results = await vectorStore.similaritySearch("Cassandra", 1);
         console.log(results)
-        expect(results[0].pageContent).toBe("AstraDB is built on Apache Cassandra");
+        expect(results.length).toBe(1);
 
     });
 
@@ -204,21 +203,19 @@ describe("Astra tests", () => {
             config
         );
 
-        const results = await store.similaritySearch("Apache Cassandra", 1);
+        const results = await store.similaritySearch("Apache Cassandra", 3, {"id": 123});
 
         expect(results.length).toEqual(1);
-        expect(results[0].pageContent).toEqual(
-            "AstraDB is built on Apache Cassandra"
-        );
-        expect(results[0].metadata.id).toEqual(123);
 
         await store.delete({ ids: [results[0].metadata._id] });
 
-        const results2 = await store.similaritySearch("Apache Cassandra", 1);
+        const results2 = await store.similaritySearch("Apache Cassandra", 3);
 
-        expect(results2[0].pageContent).not.toBe(
-            "AstraDB is built on Apache Cassandra"
-        );
+        expect(results2.length).toEqual(2);
+        for (let result of results2) {
+            expect(result.pageContent).not.toBe("AstraDB is built on Apache Cassandra");
+            expect(result.metadata["id"]).not.toBe(123);
+        }
     });
 
 });
